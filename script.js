@@ -104,8 +104,6 @@ const generatePassword = function (generator) {
   return newPassWord;
 };
 
-// generatePassword(genNumSpecial);
-
 // -----------------------------------PASSWORD GENERATOR----------------------------
 
 // STEP 2 - Ask a prompt for a number between 8 and 128
@@ -120,8 +118,12 @@ let password;
 
 // Get references to the #generate element
 var generateBtn = document.querySelector("#generate");
+var passwordText = document.querySelector("#password");
 
-// function reset() {}
+function reset() {
+  newPassWord = [];
+  return (passwordText.value = "");
+}
 
 // Write password to the #password input
 function writePassword() {
@@ -253,13 +255,13 @@ function writePassword() {
       generatePassword(genNumSpecial);
     }
   };
+  reset();
   ask();
 
   // var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-
+  // var passwordText = document.querySelector("#password");
+  // passwordText.value = "";
   passwordText.value = newPassWord;
 }
-
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
