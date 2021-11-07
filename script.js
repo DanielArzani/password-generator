@@ -17,26 +17,35 @@ const allChars = [
 ];
 // For higher and lower characters
 const highLow = [...higherAlphabet, ...lowerAlphabet];
+// For higher,lower,special char
+const highLowS = [...higherAlphabet, ...lowerAlphabet, ...specialChar];
 // For higher,lower,numbers
 const highLowNum = [...higherAlphabet, ...lowerAlphabet, ...numbers];
 // For high,num
 const highNum = [...higherAlphabet, ...numbers];
+// For high,num,special char
+const highNumS = [...higherAlphabet, ...numbers, ...specialChar];
 // For higher,special char
 const highS = [...higherAlphabet, ...specialChar];
 // For low, num
 const lowNum = [...lowerAlphabet, ...numbers];
+// For low, num and special char
+const lowNumS = [...lowerAlphabet, ...numbers, ...specialChar];
 // For lower, special char
 const lowS = [...lowerAlphabet, ...specialChar];
 // For numbers, special char
 const numS = [...numbers, ...specialChar];
 
-// ---------------------------------------------ASSIGNED VARIABLES---------------------------------------
-// Asks for password length
+// Asks for password length and whether user would like upper/lower case, numbers and symbols
 let passwordLength;
+let passwordUpperCase;
+let passwordLowerCase;
+let passwordSpecialChars;
+let password;
 
-// STEP 3 - Generate random character passwords
-//FIXME: These will sometimes give undefined, check why
-// Each function will generate a password depending on which type of characters the user desires
+// --------------------------Variables---------------------------------
+
+// Each function will generate a password depending on which type of characters the users inputs
 
 // All characters
 const generateAllChar = function () {
@@ -74,9 +83,17 @@ const genHighLowNum = function () {
     Math.floor(Math.random() * (highLowNum.length - 0 + 1)) + 0
   ];
 };
+// High and low and special
+const genHighLowSpecial = function () {
+  return highLowS[Math.floor(Math.random() * (highLowS.length - 0 + 1)) + 0];
+};
 // High and num
 const genHighNum = function () {
   return highNum[Math.floor(Math.random() * (highNum.length - 0 + 1)) + 0];
+};
+// High and num and special
+const genHighNumSpecial = function () {
+  return highNumS[Math.floor(Math.random() * (highNumS.length - 0 + 1)) + 0];
 };
 // High and special
 const genHighSpecial = function () {
@@ -90,42 +107,39 @@ const genLowSpecial = function () {
 const genlowNum = function () {
   return lowNum[Math.floor(Math.random() * (lowNum.length - 0 + 1)) + 0];
 };
+// Low and num and special
+const genlowNumSpecial = function () {
+  return lowNumS[Math.floor(Math.random() * (lowNumS.length - 0 + 1)) + 0];
+};
 // Num and special
 const genNumSpecial = function () {
   return numS[Math.floor(Math.random() * (numS.length - 0 + 1)) + 0];
 };
 
+// Function to create new password, push it to the array then convert the array into a string
 let newPassWord = [];
 const generatePassword = function (generator) {
-  for (i = 0; i < passwordLength; i++) {
+  for (i = 0; i < passwordLength - 1; i++) {
     newPassWord.push(generator());
   }
+  newPassWord = newPassWord.join("");
   console.log(newPassWord);
   return newPassWord;
 };
 
-// -----------------------------------PASSWORD GENERATOR----------------------------
-
-// STEP 2 - Ask a prompt for a number between 8 and 128
-let passwordUpperCase;
-let passwordLowerCase;
-let passwordSpecialChars;
-let password;
-
-// TODO: Add choice for if user doesn't want a password generated anymore
-
-// --------------------------------------DOM------------------------------------------
+// ----------------------PASSWORD GENERATOR----------------------------
 
 // Get references to the #generate element
 var generateBtn = document.querySelector("#generate");
 var passwordText = document.querySelector("#password");
 
+// Reset function - This will clear the text area and password
 function reset() {
   newPassWord = [];
   return (passwordText.value = "");
 }
 
-// Write password to the #password input
+// Prompt asking for password length
 function writePassword() {
   const askForLength = function () {
     passwordLength = Number(
@@ -133,15 +147,20 @@ function writePassword() {
       Min: 8 characters long
       Max: 128 characters long`)
     );
-
-    // TODO: Study regex to add in if what is inputed isnt a number
-    if (!passwordLength || passwordLength < 8 || passwordLength > 128) {
+    // Invalid responses
+    if (
+      !passwordLength ||
+      passwordLength < 8 ||
+      passwordLength > 128 ||
+      !passwordLength == /^[0-9]+$/
+    ) {
       alert("Not valid");
       askForLength();
     }
   };
   askForLength();
 
+  // Function that prompts user to decide what type of characters they want in their password
   const ask = function () {
     passwordUpperCase = confirm(
       "Would you like to use uppercase characters in your password?"
@@ -214,6 +233,14 @@ function writePassword() {
     ) {
       generatePassword(genHighLowNum);
     } else if (
+      // Uppercase and lowercase and special characters
+      passwordUpperCase &&
+      passwordLowerCase &&
+      !passwordNumbers &&
+      passwordSpecialChars
+    ) {
+      generatePassword(genHighLowSpecial);
+    } else if (
       // uppercase and numbers
       passwordUpperCase &&
       !passwordLowerCase &&
@@ -221,6 +248,14 @@ function writePassword() {
       !passwordSpecialChars
     ) {
       generatePassword(genHighNum);
+    } else if (
+      // uppercase and special characters
+      passwordUpperCase &&
+      !passwordLowerCase &&
+      passwordNumbers &&
+      passwordSpecialChars
+    ) {
+      generatePassword(genHighNumSpecial);
     } else if (
       // uppercase and special characters
       passwordUpperCase &&
@@ -238,10 +273,18 @@ function writePassword() {
     ) {
       generatePassword(genlowNum);
     } else if (
+      // lowercase and number and special
+      !passwordUpperCase &&
+      passwordLowerCase &&
+      passwordNumbers &&
+      !passwordSpecialChars
+    ) {
+      generatePassword(genlowNumSpecial);
+    } else if (
       // lowercase and special characters
       !passwordUpperCase &&
       passwordLowerCase &&
-      !passwordNumbers &&
+      passwordNumbers &&
       passwordSpecialChars
     ) {
       generatePassword(genLowSpecial);
@@ -258,10 +301,9 @@ function writePassword() {
   reset();
   ask();
 
-  // var password = generatePassword();
-  // var passwordText = document.querySelector("#password");
-  // passwordText.value = "";
   passwordText.value = newPassWord;
 }
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
+
+// ------------------------------DOM-----------------------------------
