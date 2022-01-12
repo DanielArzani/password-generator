@@ -1,309 +1,83 @@
-//Adds all special characters into a single array with each character having its own position
-const specialChar = [..."!#$%&'()*+,-./:;<=>?@[]^_`{|}~"];
-// Adds all lower case and upper case letters into single strings
-const lowerString = "abcdefghijklmnopqrstuvwxyz";
-const higherString = lowerString.toUpperCase();
-// Turns those strings into arrays
-const lowerAlphabet = [...lowerString];
-const higherAlphabet = [...higherString];
-// Adds numbers
-const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-// Merges all arrays into one
-const allChars = [
-  ...lowerAlphabet,
-  ...higherAlphabet,
-  ...numbers,
-  ...specialChar,
-];
-// For higher and lower characters
-const highLow = [...higherAlphabet, ...lowerAlphabet];
-// For higher,lower,special char
-const highLowS = [...higherAlphabet, ...lowerAlphabet, ...specialChar];
-// For higher,lower,numbers
-const highLowNum = [...higherAlphabet, ...lowerAlphabet, ...numbers];
-// For high,num
-const highNum = [...higherAlphabet, ...numbers];
-// For high,num,special char
-const highNumS = [...higherAlphabet, ...numbers, ...specialChar];
-// For higher,special char
-const highS = [...higherAlphabet, ...specialChar];
-// For low, num
-const lowNum = [...lowerAlphabet, ...numbers];
-// For low, num and special char
-const lowNumS = [...lowerAlphabet, ...numbers, ...specialChar];
-// For lower, special char
-const lowS = [...lowerAlphabet, ...specialChar];
-// For numbers, special char
-const numS = [...numbers, ...specialChar];
-
-// Asks for password length and whether user would like upper/lower case, numbers and symbols
-let passwordLength;
-let passwordUpperCase;
-let passwordLowerCase;
-let passwordSpecialChars;
-let password;
-
-// --------------------------Variables---------------------------------
-
-// Each function will generate a password depending on which type of characters the users inputs
-
-// All characters
-const generateAllChar = function () {
-  return allChars[Math.floor(Math.random() * (allChars.length - 0 + 1)) + 0];
-};
-// Uppercase
-const generateUpperChar = function () {
-  return higherAlphabet[
-    Math.floor(Math.random() * (higherAlphabet.length - 0 + 1)) + 0
-  ];
-};
-// Lowercase
-const generateLowerChar = function () {
-  return lowerAlphabet[
-    Math.floor(Math.random() * (lowerAlphabet.length - 0 + 1)) + 0
-  ];
-};
-// Numbers
-const generateNumbers = function () {
-  return numbers[Math.floor(Math.random() * (numbers.length - 0 + 1)) + 0];
-};
-// Special Characters
-const generateSpecialChar = function () {
-  return specialChar[
-    Math.floor(Math.random() * (specialChar.length - 0 + 1)) + 0
-  ];
-};
-// High and low
-const genHighLow = function () {
-  return highLow[Math.floor(Math.random() * (highLow.length - 0 + 1)) + 0];
-};
-// High and low and num
-const genHighLowNum = function () {
-  return highLowNum[
-    Math.floor(Math.random() * (highLowNum.length - 0 + 1)) + 0
-  ];
-};
-// High and low and special
-const genHighLowSpecial = function () {
-  return highLowS[Math.floor(Math.random() * (highLowS.length - 0 + 1)) + 0];
-};
-// High and num
-const genHighNum = function () {
-  return highNum[Math.floor(Math.random() * (highNum.length - 0 + 1)) + 0];
-};
-// High and num and special
-const genHighNumSpecial = function () {
-  return highNumS[Math.floor(Math.random() * (highNumS.length - 0 + 1)) + 0];
-};
-// High and special
-const genHighSpecial = function () {
-  return highS[Math.floor(Math.random() * (highS.length - 0 + 1)) + 0];
-};
-// Low and special
-const genLowSpecial = function () {
-  return lowS[Math.floor(Math.random() * (lowS.length - 0 + 1)) + 0];
-};
-// Low and num
-const genlowNum = function () {
-  return lowNum[Math.floor(Math.random() * (lowNum.length - 0 + 1)) + 0];
-};
-// Low and num and special
-const genlowNumSpecial = function () {
-  return lowNumS[Math.floor(Math.random() * (lowNumS.length - 0 + 1)) + 0];
-};
-// Num and special
-const genNumSpecial = function () {
-  return numS[Math.floor(Math.random() * (numS.length - 0 + 1)) + 0];
-};
-
-// Function to create new password, push it to the array then convert the array into a string
-let newPassWord = [];
-const generatePassword = function (generator) {
-  for (i = 0; i < passwordLength - 1; i++) {
-    newPassWord.push(generator());
+// Prompts user for information on password
+function promptUser() {
+  // WHEN prompted for the length of the password
+  const chosenLength = alert("Please choose the length of the password");
+  // THEN I choose a length of at least 8 characters and no more than 128 characters
+  const passwordLength = Number(
+    prompt("The password must be between 8-128 characters")
+  );
+  if (
+    passwordLength < 8 ||
+    passwordLength > 128 ||
+    !Number(passwordLength) ||
+    !passwordLength
+  ) {
+    alert("Invalid Response, please try again");
+    return;
   }
-  newPassWord = newPassWord.join("");
-  console.log(newPassWord);
-  return newPassWord;
-};
+  // WHEN asked for character types to include in the password
+  alert("Please choose what type of characters you would like");
+  // THEN I confirm whether or not to include lowercase, uppercase, numeric, and/or + special characters
+  const confirmUppercase = confirm("Would you like uppercase characters?");
+  const confirmLowercase = confirm("Would you like lowercase characters?");
+  const confirmSpecials = confirm("Would you like special characters?");
+  const confirmNumbers = confirm("Would you like numbers?");
 
-// ----------------------PASSWORD GENERATOR----------------------------
+  const confirmations = [
+    confirmUppercase,
+    confirmLowercase,
+    confirmSpecials,
+    confirmNumbers,
+  ];
+  return [passwordLength, confirmations];
+}
+
+// Function that will return users chosen characters
+function characterTypes(userChoice) {
+  // All char types
+  const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowercase = "abcdefghijklmnopqrstuvwxyz";
+  const specials = "!@#$%^&*()_+{}:\"<>?|[];',./`~";
+  const numbers = "0123456789";
+
+  const totalArray = [uppercase, lowercase, specials, numbers];
+
+  // Array with all confirmations
+  const choiceArray = [];
+
+  // Loop through array and add strings composed of true values
+  for (let i = 0; i < userChoice.length; i++) {
+    if (userChoice[i] === true) {
+      choiceArray.push(totalArray[i]);
+    }
+  }
+  return choiceArray.join("");
+}
+
+// Generates random password
+function randomGenerator(length, passwordCharacters) {
+  let retVal = "";
+  for (var i = 0; i < length; i++) {
+    //picks a character within charSet at index of random number
+    retVal += passwordCharacters.charAt(
+      Math.floor(Math.random() * passwordCharacters.length)
+    );
+  }
+  return retVal;
+}
 
 // Get references to the #generate element
 var generateBtn = document.querySelector("#generate");
-var passwordText = document.querySelector("#password");
 
-// Reset function - This will clear the text area and password
-function reset() {
-  newPassWord = [];
-  return (passwordText.value = "");
-}
-
-// Prompt asking for password length
+// Write password to the #password input
 function writePassword() {
-  const askForLength = function () {
-    passwordLength = Number(
-      prompt(`Please choose the length of the password you would like
-      Min: 8 characters long
-      Max: 128 characters long`)
-    );
-    // Invalid responses
-    if (
-      !passwordLength ||
-      passwordLength < 8 ||
-      passwordLength > 128 ||
-      !passwordLength == /^[0-9]+$/
-    ) {
-      alert("Not valid");
-      askForLength();
-    }
-  };
-  askForLength();
+  const userInputs = promptUser();
+  const [chosenLength, userConfirms] = userInputs;
+  const passwordChoices = characterTypes(userConfirms);
 
-  // Function that prompts user to decide what type of characters they want in their password
-  const ask = function () {
-    passwordUpperCase = confirm(
-      "Would you like to use uppercase characters in your password?"
-    );
-    passwordLowerCase = confirm(
-      "Would you like to use lowercase characters in your password?"
-    );
-    passwordNumbers = confirm(
-      "Would you like to use numerical values in your password?"
-    );
-    passwordSpecialChars = confirm(
-      "Would you like to use special characters in your password?"
-    );
-
-    // Chooses password generator based on user input
-    if (
-      // Just uppercase
-      passwordUpperCase &&
-      !passwordLowerCase &&
-      !passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(generateUpperChar);
-    } else if (
-      // Just lower case
-      !passwordUpperCase &&
-      passwordLowerCase &&
-      !passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(generateLowerChar);
-    } else if (
-      // Just numbers
-      !passwordUpperCase &&
-      !passwordLowerCase &&
-      passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(generateNumbers);
-    } else if (
-      // Just special characters
-      !passwordUpperCase &&
-      !passwordLowerCase &&
-      !passwordNumbers &&
-      passwordSpecialChars
-    ) {
-      generatePassword(generateSpecialChar);
-    } else if (
-      // All characters
-      passwordUpperCase &&
-      passwordLowerCase &&
-      passwordNumbers &&
-      passwordSpecialChars
-    ) {
-      generatePassword(generateAllChar);
-    } else if (
-      // Uppercase and lowercase
-      passwordUpperCase &&
-      passwordLowerCase &&
-      !passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(genHighLow);
-    } else if (
-      // Uppercase and lowercase and numbers
-      passwordUpperCase &&
-      passwordLowerCase &&
-      passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(genHighLowNum);
-    } else if (
-      // Uppercase and lowercase and special characters
-      passwordUpperCase &&
-      passwordLowerCase &&
-      !passwordNumbers &&
-      passwordSpecialChars
-    ) {
-      generatePassword(genHighLowSpecial);
-    } else if (
-      // uppercase and numbers
-      passwordUpperCase &&
-      !passwordLowerCase &&
-      passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(genHighNum);
-    } else if (
-      // uppercase and special characters
-      passwordUpperCase &&
-      !passwordLowerCase &&
-      passwordNumbers &&
-      passwordSpecialChars
-    ) {
-      generatePassword(genHighNumSpecial);
-    } else if (
-      // uppercase and special characters
-      passwordUpperCase &&
-      !passwordLowerCase &&
-      !passwordNumbers &&
-      passwordSpecialChars
-    ) {
-      generatePassword(genHighSpecial);
-    } else if (
-      // lowercase and number
-      !passwordUpperCase &&
-      passwordLowerCase &&
-      passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(genlowNum);
-    } else if (
-      // lowercase and number and special
-      !passwordUpperCase &&
-      passwordLowerCase &&
-      passwordNumbers &&
-      !passwordSpecialChars
-    ) {
-      generatePassword(genlowNumSpecial);
-    } else if (
-      // lowercase and special characters
-      !passwordUpperCase &&
-      passwordLowerCase &&
-      passwordNumbers &&
-      passwordSpecialChars
-    ) {
-      generatePassword(genLowSpecial);
-    } else if (
-      // numbers and special characters
-      !passwordUpperCase &&
-      !passwordLowerCase &&
-      passwordNumbers &&
-      passwordSpecialChars
-    ) {
-      generatePassword(genNumSpecial);
-    }
-  };
-  reset();
-  ask();
-
-  passwordText.value = newPassWord;
+  var passwordText = document.querySelector("#password");
+  passwordText.value = randomGenerator(chosenLength, passwordChoices);
 }
+
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
-
-// ------------------------------DOM-----------------------------------
